@@ -1,0 +1,57 @@
+#%RAML 0.8
+---
+title: Books API
+version: v1
+
+schemas: 
+  - booksSchema: !include book-schema.json
+
+traits: !include traits.raml
+
+resourceTypes: !include resourceTypes.raml
+
+/books:
+  type:
+    collectionType:
+      example: !include books-example.json
+      schemaName: booksSchema
+  
+  /{bookid}:
+    get:
+      description: Retrieve a <<resourcePathName|!singularize>> by ID.
+      queryParameters:
+        name:
+          displayName: Book Name
+          type: string
+          description: Book's full name
+          example: Mule Documentation
+          required: false
+        author:
+          displayName: Author
+          type: string
+          description: An author's full name
+          example: Mulesoft
+          required: false
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "name" : "Mule Documentation",
+                  "author" : "Mulesoft",
+                  "id" : 1234
+                }
+        404:
+          body:
+            application/json:
+              example: |
+                {"message": "Book not found"}
+        500:
+          body:
+            application/json:
+              example: |
+                {
+                  "status" : "error",
+                  "message" : "Server is down"
+                }
